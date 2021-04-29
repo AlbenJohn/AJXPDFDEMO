@@ -1,6 +1,9 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+
+import { DomSanitizer } from '@angular/platform-browser';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -48,24 +51,42 @@ export class AppComponent {
   ];
 
   @ViewChild('htmlData') htmlData:ElementRef;
-constructor(){
+constructor(private domSanitizer:DomSanitizer){
 
 }
   public openPDF():void {
     let DATA = document.getElementById('htmlData');
         
     html2canvas(DATA).then(canvas => {
-        
         let fileWidth = 208;
-        let fileHeight = canvas.height * fileWidth / canvas.width;
-        
+        let fileHeight = canvas.height * fileWidth / canvas.width;       
         const FILEURI = canvas.toDataURL('image/png')
         let PDF = new jsPDF('p', 'mm', 'a4');
         let position = 0;
         PDF.addImage(FILEURI, 'PNG', 0, position, fileWidth, fileHeight)
-        
         PDF.save('angular-demo.pdf');
     });     
     }
 
+print() {
+          let DATA = document.getElementById('htmlData');
+          const fileName = String(new Date().valueOf());
+          const element: HTMLElement = document.querySelector('.print-area');
+          const regionCanvas = element.getBoundingClientRect();
+          
+        html2canvas(DATA).then(async canvas => {
+          let fileWidth = 208;
+          let fileHeight = canvas.height * fileWidth / canvas.width;
+          const FILEURI = canvas.toDataURL('image/png')
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            let position = 0;
+            pdf.addImage(FILEURI, 'PNG', 0, position, fileWidth, fileHeight)
+           // await pdf.save(fileName, { returnPromise: true });
+               pdf.autoPrint();             
+              let dataSrc =  pdf.output("bloburl")
+              var iframe:any = window.document.getElementById('iFramePdf');
+              iframe.src = pdf.output('datauristring');
+           
+        });
+    }
 }

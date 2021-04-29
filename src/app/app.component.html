@@ -1,7 +1,7 @@
 <div class="container" >
   <div class="row">
-
-    <div class="col-md-8" id="htmlData" >
+  <div style="display: none;"> <iframe id='iFramePdf' src=''> </iframe></div>
+    <div class="col-md-8 print-area" id="htmlData" >
       <table class="table table-bordered" style="margin-top: 5%;">
         <tr class="table-primary">
           <th>Id</th>
@@ -20,6 +20,8 @@
 
     <div class="col-md-4 text-right">
       <button class="btn btn-success btn-block" (click)="openPDF()">Download PDF</button>
+      <button class="btn btn-success btn-block" (click)="print()">open PDF</button>
+
     </div>
 
   </div>
